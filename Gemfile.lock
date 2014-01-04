@@ -1,0 +1,10 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    getopt (1.4.1)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  getopt

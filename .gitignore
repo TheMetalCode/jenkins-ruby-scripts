@@ -16,3 +16,17 @@ tmp
 .yardoc
 _yardoc
 doc/
+
+# OSX
+.DS_Store
+
+# RubyMine
+.idea/*
+
+# Make your own ruby environment
+.ruby-gemset
+.ruby-version
+.rvmrc
+
+# Get your own hipchat_room_message https://github.com/hipchat/hipchat-cli
+hipchat_room_message

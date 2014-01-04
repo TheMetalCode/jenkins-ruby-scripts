@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 require 'rubygems'
-require "getopt/long"
+require 'getopt/long'
+require 'yaml'
 
 opt = Getopt::Long.getopts(
   ["--job_name", "-j", Getopt::REQUIRED],
@@ -14,7 +15,6 @@ opt = Getopt::Long.getopts(
 
 #every single param is required
 if !opt["job_name"] || !opt["build_url"] || !opt["job_status"] || !opt["hipchat_token"] || !opt["build_branch"]
-  puts "Please enter values for all params since they are all required"
   puts "usage: #{$0} \n -j <job name> \n -b <build url> \n -s <job status> \n -c <last comitter, aka the person we're blaming for breaking the build> \n -t <hipchat api token> \n -r <branch that was built> \n -p <build culprits>"
   exit 1
 end
@@ -35,59 +35,24 @@ end
 
 #determine rooms to notify
 
-hipchat_rooms = []
+rooms_config = nil
+job_config = nil
+begin
+  rooms_config = YAML.load_file('hipchat_rooms.yml')
+  job_config = YAML.load_file('jenkins_jobs.yml')["#{job_name}"]
+rescue
+  puts "Please make sure you have a properly configured hipchat_rooms.yml and jenkins_jobs.yml in your scripts directory, see README"
+  exit 1
+end
 
-case job_name
-when 'thecity'
-  if build_branch == "master"
-    hipchat_rooms = [217609, 223990, 220168]
-  else
-    hipchat_rooms = [217609]
-  end
-when 'authcity'
-  if build_branch == "master"
-    hipchat_rooms = [217609, 223990, 220168]
-  else
-    hipchat_rooms = [217609]
-  end
-when 'rosellini'
-  if build_branch == "master"
-    hipchat_rooms = [217609, 223990, 220168]
-  else
-    hipchat_rooms = [217609]
-  end
-when 'epistle'
-  if build_branch == "master"
-    hipchat_rooms = [217609, 223990, 220168]
-  else
-    hipchat_rooms = [217609]
-  end
-when 'givecity'
-  if build_branch == "master"
-    hipchat_rooms = [217609, 223990, 220168]
-  else
-    hipchat_rooms = [217609]
-  end
-when 'mailercity'
-  hipchat_rooms = [217609]
-when 'smtpcity'
-  hipchat_rooms = [217609]
-when 'citysearch'
-  if build_branch == "master"
-    hipchat_rooms = [217609, 223990, 220168]
-  else
-    hipchat_rooms = [217609]
-  end
-when 'cityassets'
-  hipchat_rooms = [217609]
-when 'provcity'
-  hipchat_rooms = [217609]
+master_rooms = rooms_config['master_branch']['rooms']
+non_master_rooms = rooms_config['non_master_branches']['rooms']
+rooms = []
+
+if build_branch == 'master' and job_config['notify_master_rooms']
+  rooms = master_rooms
 else
-  if build_branch == "master"
-    hipchat_rooms = [217609, 223990, 220168]
-  else
-    hipchat_rooms = [217609]
-  end
+  rooms = non_master_rooms
 end
 
 #lets craft the message here, which hinges on job status and people to blame
@@ -110,7 +75,7 @@ else
   #do nothing
 end
 
-hipchat_rooms.each do |room|
+rooms.each do |room|
   case job_status
   when "SUCCESS"
     puts "Sending success notification to room #{room}"
@@ -122,4 +87,3 @@ hipchat_rooms.each do |room|
     #nothing
   end
 end
-

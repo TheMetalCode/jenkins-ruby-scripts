@@ -30,3 +30,9 @@ doc/
 
 # Get your own hipchat_room_message https://github.com/hipchat/hipchat-cli
 hipchat_room_message
+
+# Make your own hipchat room config
+hipchat_rooms.yml
+
+# Make your own jenkins jobs config
+jenkins_jobs.yml

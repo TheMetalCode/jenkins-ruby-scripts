@@ -59,17 +59,17 @@ end
 room_message = ''
 case job_status
 when "SUCCESS"
-  room_message = "Successful build for #{job_name}: #{build_url}"
+  room_message = "Successful build for #{job_name} - #{build_branch}: #{build_url}"
 when "FAILURE"
   #as far as people to blame, prefer culprits, but fall back to last comitter
   if !build_culprits.nil? and !build_culprits.empty?
     build_culprits = build_culprits.strip
-    room_message = "#{build_culprits} broke the build for #{job_name}: #{build_url}"
+    room_message = "#{build_culprits} broke the build for #{job_name} - #{build_branch}: #{build_url}"
   elsif !last_committer.nil? and !last_committer.empty?
     last_committer = last_committer.strip
-    room_message = "#{last_committer} broke the build for #{job_name}: #{build_url}"
+    room_message = "#{last_committer} broke the build for #{job_name} - #{build_branch}: #{build_url}"
   else
-    room_message = "The build is broken for #{job_name} and I have nobody to blame: #{build_url}"
+    room_message = "The build is broken for #{job_name} - #{build_branch} and I have nobody to blame: #{build_url}"
   end
 else
   #do nothing

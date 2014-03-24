@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 require 'rubygems'
 require 'getopt/long'
-require 'net/http'
+require 'mechanize'
 require 'json'
 
 opt = Getopt::Long.getopts(
@@ -13,8 +13,9 @@ if !opt["b"]
   exit 1
 end
 
+agent = Mechanize.new
 build_url = opt["build_url"]
-build_json = Net::HTTP.get(URI("#{build_url}api/json"))
+build_json = agent.get(URI("#{build_url}api/json")).body
 build_hash = JSON.parse(build_json)
 build_culprits = build_hash['culprits']
 

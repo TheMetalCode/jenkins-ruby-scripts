@@ -7,6 +7,7 @@ Ruby versions tested:
 * ruby-1.9.3-p484
 * ruby-2.0.0-p353
 * ruby-2.1.0
+* jruby-1.7.10
 
 These are some ruby scripts I wrote to assist in our Jenkins implementation at [The City](http://github.com/thecity), specifically relating to post-build tasks. Each of these scripts can be executed in a [shell post-build task](https://wiki.jenkins-ci.org/display/JENKINS/PostBuildScript+Plugin).
 

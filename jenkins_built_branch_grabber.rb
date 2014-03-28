@@ -17,6 +17,16 @@ agent = Mechanize.new
 build_url = opt["build_url"]
 build_json = agent.get(URI("#{build_url}api/json")).body
 build_hash = JSON.parse(build_json)
-built_branch = build_hash['actions'][2]['lastBuiltRevision']['branch'][0]['name']
+built_branch = nil
+begin
+  built_branch = build_hash['actions'][2]['lastBuiltRevision']['branch'][0]['name']
+rescue
+  built_branch = build_hash['actions'][3]['lastBuiltRevision']['branch'][0]['name'] rescue nil
+end
 
-puts built_branch
+if built_branch.nil?
+  puts "Unable to discern lastBuiltRevision branch name"
+  exit 1
+else
+  puts built_branch
+end
